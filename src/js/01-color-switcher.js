@@ -12,12 +12,12 @@ startBtn.addEventListener('click', () => {
     document.body.style.backgroundColor = hexColor;
   }, 1000) 
 startBtn.setAttribute('disabled', true);
-      
   
 }); 
+
   stopBtn.addEventListener('click', () => {
     clearInterval(timeId)
-      startBtn.disabled === false;
+      startBtn.removeAttribute('disabled');
   
 });
  
