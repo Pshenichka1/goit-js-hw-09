@@ -7,18 +7,18 @@ let timeId = null;
 // startBtn.setAttribute('disabled', false);
 
 startBtn.addEventListener('click', () => {
-  if( timeId = setInterval(() => {
+   timeId = setInterval(() => {
     let hexColor = generateHex();
     document.body.style.backgroundColor = hexColor;
-  }, 1000)) {
+  }, 1000) 
 startBtn.setAttribute('disabled', true);
-  }     
+      
   
 }); 
   stopBtn.addEventListener('click', () => {
-    if (clearInterval(timeId)) {
+    clearInterval(timeId)
       startBtn.disabled === false;
-  }
+  
 });
  
 
