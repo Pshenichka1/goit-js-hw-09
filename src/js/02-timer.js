@@ -9,54 +9,27 @@ const daysEl = document.querySelector('span[data-days]');
 const hoursEl = document.querySelector('span[data-hours]');
 const minutesEl = document.querySelector('span[data-minutes]');
 const secondsEl = document.querySelector('span[data-seconds]');
+
 startBtn.disabled = true;
-let selectedDate = null;
+let intervalId = null;
 
+const options = {
+    enableTime: true,
+    time_24hr: true,
+    defaultDate: new Date(),
+    minuteIncrement: 1,
 
-flatpickr(dateTimeInput,
-    (options = { 
-        intervalId: null,
-        isActiv: false,
-        enableTime: true,
-        time_24hr: true,
-        defaultDate: new Date(),
-        minuteIncrement: 1,
-        onClose([selectedDates]) {
-            
-            if (selectedDate < new Date()) {
-                startBtn.disabled = true;
-                Notiflix.Notify.failure('Please choose a date in the future');
-                
-            }
-            startBtn.disabled = false;
-            selectedDate = selectedDates;
-            return;
-        },
-        start() {
-            let deltaTime = 0;
-            if (this.isActiv) {
-                return;
-            }
-            this.intervalId = setInterval(() => {
-                startBtn.disabled = true;
-                const nowTime = new Date();
-                deltaTime = selectedDate - nowTime;
-                if (deltaTime <= 0) {
-                    clearInterval(this.intervalId);
-                }
-                this.isActiv = true;
-                const components = convertMs(deltaTime);
-                daysEl.textContent = components.days;
-                hoursEl.textContent = components.hours;
-                minutesEl.textContent = components.minutes;
-                secondsEl.textContent = components.seconds;
-            }, 1000);
-        },
-    }
-    ));
-startBtn.addEventListener('click', () => {
-    options.start();
-});
+    onClose(selectedDates) {
+        const currentDate = new Date();
+        if (selectedDates[0] < currentDate) {
+            startBtn.disabled = true;
+            Notiflix.Notify.failure('Please choose a date in the future');
+        }
+        startBtn.disabled = false;
+    },
+};
+const usingFlatpickr = flatpickr(dateTimeInput, options);
+
         
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -76,4 +49,27 @@ function convertMs(ms) {
 
   return { days, hours, minutes, seconds };
 };
-
+function addLeadingZero(value) {
+    return String(value).padStart(2, '0');
+};
+function startTimer() {
+    const selectedDate = usingFlatpickr.selectedDates[0];
+    intervalId = setInterval(() => {
+        
+        const startTime = new Date();
+        const deltaTime = selectedDate - startTime;
+        startBtn.disabled = true;
+        if (deltaTime <= 0) {
+            clearInterval(intervalId);
+            return;
+        }
+        updateTimer(convertMs(deltaTime));
+    }, 1000);
+};
+function updateTimer({ days, hours, minutes, seconds }) {
+    daysEl.textContent = addLeadingZero(days);
+    hoursEl.textContent = addLeadingZero(hours);
+    minutesEl.textContent = addLeadingZero(minutes);
+    secondsEl.textContent = addLeadingZero(seconds);
+};
+startBtn.addEventListener('click', startTimer);
