@@ -17,7 +17,7 @@ startBtn.setAttribute('disabled', true);
 
   stopBtn.addEventListener('click', () => {
     clearInterval(timeId)
-      startBtn.removeAttribute('disabled');
+      startBtn.removeAttribute('disabled')  === false;
   
 });
  
